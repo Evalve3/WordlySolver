@@ -1,60 +1,62 @@
 import random
-import time
 from dataclasses import dataclass, field
-from typing import Dict, Optional, List, Set
+from typing import Dict, Optional, Set
 
-from util import get_all_english_word, measure_time
-
-
-@dataclass
-class WordlySearchDTO:
-    exclude_letters: set
-    positions_letter: Dict[int, str]  # Position in word number | str
-    exclude_positions: Dict[int, Set[str]]
-
-    max_count: Dict[str, int]
-
-    wordly_len: int = 5  # how much letters in word
+from src.wordly_solver.core.wordly_solver import WordlySearchDTO, WordlySolver
 
 
 @dataclass
 class LetterNode:
     letter_high: int  # letter number in word
-    letter: str = None
+    letter: str
     children: Dict[str, "LetterNode"] = field(default_factory=dict)
     parent: Optional["LetterNode"] = None
 
     visited: bool = False  # for dfs
 
     def get_full_word(self) -> str:
-        """return word"""
         word = ""
         current_node = self
         while current_node.parent:
+            assert current_node.letter
             word += current_node.letter
             current_node = current_node.parent
 
         return word[::-1]
 
 
-class AllWordsTree:
+class AllWordsTree(WordlySolver):
     # TODO: все еще есть попытки? - вырезать как можно больше букв, которые все еще можно
-    def __init__(self, init_words: List[str]):
-        self.root = LetterNode(letter_high=0)
+    def __init__(self, init_words: Set[str]) -> None:
+        self.root = LetterNode(
+            letter_high=0,
+            letter=None  # type: ignore
+        )
 
         for word in init_words:
-            self.add_word(word)
+            self._add_word(word)
 
-    def add_word(self, word: str) -> None:
+    def _add_word(self, word: str) -> None:
         current = self.root
         for idx, letter in enumerate(word):
             if letter not in current.children:
                 current.children[letter] = LetterNode(letter=letter, parent=current, letter_high=idx + 1)
             current = current.children[letter]
 
-    def wordly_dfs(self, dto: WordlySearchDTO, start_node: LetterNode = None) -> str | None:
+    def _reset_visited(self) -> None:
+
+        def reset_node(node: LetterNode):
+            node.visited = False
+            for child in node.children.values():
+                reset_node(child)
+
+        reset_node(self.root)
+
+    def wordly_search(self, dto: WordlySearchDTO, start_node: LetterNode | None = None) -> str | None:
+        """ DFS """
 
         if not start_node:
+            self._reset_visited()
             start_node = self.root
 
         if start_node.visited:
@@ -76,7 +78,7 @@ class AllWordsTree:
             if letter not in start_node.children:
                 return None
 
-            reached = self.wordly_dfs(start_node=start_node.children[letter], dto=dto)
+            reached = self.wordly_search(start_node=start_node.children[letter], dto=dto)
 
             if reached:
                 return reached
@@ -105,36 +107,14 @@ class AllWordsTree:
             if not valid_children:
                 return None
 
-            # чтобы при каждом запуске был разный результат
+            # difference result between runs
             random.shuffle(valid_children)
 
             for children in valid_children:
                 if not children.visited:
-                    reached = self.wordly_dfs(start_node=children, dto=dto)
+                    reached = self.wordly_search(start_node=children, dto=dto)
 
                     if reached:
                         return reached
 
         return None
-
-
-if __name__ == "__main__":
-    random.seed(time.time())
-
-    AllWordsTree = AllWordsTree(get_all_english_word(5))
-    find_word = AllWordsTree.wordly_dfs(
-        dto=WordlySearchDTO(
-            exclude_letters={"a", "b", "r", "o", "e", "l", "s"},
-            positions_letter={
-                3: "u",
-                5: 'e',
-                4: "t"
-            },
-            exclude_positions={
-            },
-            max_count={
-            }
-        ),
-    )
-
-    print(find_word)

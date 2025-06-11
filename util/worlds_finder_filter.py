@@ -31,7 +31,7 @@ def check_word(word):
         return (word, f"error: {str(e)}")
 
 
-def process_words(words_list, num_threads=120):
+def process_words(words_list, num_threads=4):
     incorrect_words = []
     correct_words = []
     errors = []
@@ -44,13 +44,10 @@ def process_words(words_list, num_threads=120):
             word, result = future.result()
             if result == "correct":
                 correct_words.append(word)
-                # print(f"\r{word}: correct", end="")
             elif result == "incorrect":
                 incorrect_words.append(word)
-                # print(f"\r{word}: incorrect", end="")
             else:
                 errors.append((word, result))
-                # print(f"\r{word}: {result}", end="")
 
     print("\nDone!")
     return correct_words, incorrect_words, errors
