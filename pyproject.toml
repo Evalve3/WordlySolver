@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [tool.setuptools]
 package-dir = { "" = "src" }
 
@@ -18,8 +22,9 @@ dependencies = [
 test = [
     "pytest"
 ]
-
 linter = [
-    "mypy",
     "ruff"
+]
+type_checker = [
+    "mypy",
 ]

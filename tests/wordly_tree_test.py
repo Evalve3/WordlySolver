@@ -38,7 +38,7 @@ def _get_test_tree(test_words: Set[str]) -> AllWordsTree:
     return AllWordsTree(test_words)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def english_word5_tree() -> AllWordsTree:
     return _get_test_tree(TEST_WORDS)
 
@@ -70,7 +70,7 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
                     max_count={},
                     wordly_len=5,
                 ),
-                "muted"
+                "muted",
         ),
         (
                 WordlySearchDTO(
@@ -80,7 +80,7 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
                     max_count={"m": 0},
                     wordly_len=5,
                 ),
-                None
+                None,
         ),
         (
                 WordlySearchDTO(
@@ -90,14 +90,12 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
                     max_count={},
                     wordly_len=5,
                 ),
-                None
-        )
-    ]
+                None,
+        ),
+    ],
 )
 def test_wordly_search_one_result(
-        dto: WordlySearchDTO,
-        expected: str | None,
-        english_word5_tree: AllWordsTree
+        dto: WordlySearchDTO, expected: str | None, english_word5_tree: AllWordsTree
 ):
     for _ in range(100):
         result = english_word5_tree.wordly_search(dto)
@@ -112,11 +110,13 @@ def test_wordly_search_one_result(
                 WordlySearchDTO(
                     exclude_letters=set(),
                     positions_letter={1: "a"},
-                    exclude_positions={4: {"e"}, },
+                    exclude_positions={
+                        4: {"e"},
+                    },
                     max_count={},
                     wordly_len=5,
                 ),
-                ["aleft", "asess", None]
+                ["aleft", "asess", None],
         ),
         (
                 WordlySearchDTO(
@@ -126,7 +126,7 @@ def test_wordly_search_one_result(
                     max_count={},
                     wordly_len=5,
                 ),
-                ["verst", "weals", None]
+                ["verst", "weals", None],
         ),
         (
                 WordlySearchDTO(
@@ -136,7 +136,7 @@ def test_wordly_search_one_result(
                     max_count={},
                     wordly_len=5,
                 ),
-                ["begum", None]
+                ["begum", None],
         ),
         (
                 WordlySearchDTO(
@@ -146,7 +146,7 @@ def test_wordly_search_one_result(
                     max_count={"a": 2, "e": 1, "s": 2},
                     wordly_len=5,
                 ),
-                ["aband", "aleft", "ascon", None]
+                ["aband", "aleft", "ascon", None],
         ),
         (
                 WordlySearchDTO(
@@ -156,13 +156,12 @@ def test_wordly_search_one_result(
                     max_count={"o": 1},
                     wordly_len=5,
                 ),
-                ["birls", "begus", None]
-        )
-    ]
+                ["birls", "begus", None],
+        ),
+    ],
 )
 def test_wordly_search_multiply_results(
-        dto: WordlySearchDTO,
-        expected: list[str | None]
+        dto: WordlySearchDTO, expected: list[str | None]
 ):
     test_words = copy.deepcopy(TEST_WORDS)
     english_word5_tree = _get_test_tree(test_words)

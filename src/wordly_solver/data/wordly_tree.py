@@ -54,7 +54,9 @@ class AllWordsTree(WordlySolver):
         reset_node(self.root)
 
     def wordly_search(
-        self, dto: WordlySearchDTO, start_node: LetterNode | None = None
+            self,
+            dto: WordlySearchDTO,
+            start_node: LetterNode | None = None
     ) -> str | None:
         """DFS"""
 
@@ -72,8 +74,8 @@ class AllWordsTree(WordlySolver):
             for letters in dto.exclude_positions.values():
                 all_positions_letters.update(letters)
             if all_positions_letters.issubset(set(word)) and all(
-                word.count(letter) <= dto.max_count.get(letter, dto.wordly_len)
-                for letter in set(word)
+                    word.count(letter) <= dto.max_count.get(letter, dto.wordly_len)
+                    for letter in set(word)
             ):
                 return word
 
@@ -98,8 +100,8 @@ class AllWordsTree(WordlySolver):
 
             if dto.exclude_positions.get(start_node.letter_high + 1):
                 valid_letters = {
-                    c.letter for c in valid_children
-                } - dto.exclude_positions[start_node.letter_high + 1]
+                                    c.letter for c in valid_children
+                                } - dto.exclude_positions[start_node.letter_high + 1]
 
                 valid_children = [
                     child for child in valid_children if child.letter in valid_letters
