@@ -15,7 +15,6 @@ class WordlySearchDTO:
 
 
 class WordlySolver(ABC):
-
     @abstractmethod
     def wordly_search(self, dto: WordlySearchDTO) -> str | None:
         pass
