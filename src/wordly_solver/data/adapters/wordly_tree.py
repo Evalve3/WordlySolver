@@ -27,18 +27,30 @@ class LetterNode:
 
 
 class AllWordsTree(WordlyFinder):
-    # TODO: поддержка нескольких языков
-    def __init__(self, init_words: Set[str]) -> None:
-        self.root = LetterNode(
-            letter_high=0,
-            letter=None,  # type: ignore
-        )
 
-        for word in init_words:
-            self._add_word(word)
+    def __init__(
+            self,
+            init_words: Dict[Language, Set[str]]
+    ) -> None:
 
-    def _add_word(self, word: str) -> None:
-        current = self.root
+        assert len(init_words) == len(Language.__members__), "Need all languages to init"
+
+        for lang in init_words:
+            setattr(
+                self,
+                f"{lang.value}_root",
+                LetterNode(
+                    letter_high=0,
+                    letter=None,  # type: ignore
+                )
+            )
+
+        for lang, words in init_words.items():
+            for word in words:
+                self._add_word(word, lang)
+
+    def _add_word(self, word: str, lang: Language) -> None:
+        current = getattr(self, f"{lang.value}_root")
         for idx, letter in enumerate(word):
             if letter not in current.children:
                 current.children[letter] = LetterNode(
@@ -46,25 +58,34 @@ class AllWordsTree(WordlyFinder):
                 )
             current = current.children[letter]
 
-    def _reset_visited(self) -> None:
+    def _reset_visited(self, lang: Language) -> None:
         def reset_node(node: LetterNode):
             node.visited = False
             for child in node.children.values():
                 reset_node(child)
 
-        reset_node(self.root)
+        reset_node(self._get_root_by_lang(lang=lang))
+
+    def _get_root_by_lang(self, lang: Language):
+        return getattr(self, f"{lang.value}_root")
 
     def wordly_search(
             self,
             dto: WordlySearchDTO,
-            language: Language,  # TODO impl, tests
+            language: Language,
             start_node: LetterNode | None = None
     ) -> str | None:
-        """DFS"""
+        """
+        DFS
+
+        THREAD UNSAFE
+        """
 
         if not start_node:
-            self._reset_visited()
-            start_node = self.root
+            self._reset_visited(
+                lang=language
+            )
+            start_node = self._get_root_by_lang(lang=language)
 
         if start_node.visited:
             return None
