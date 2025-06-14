@@ -50,7 +50,7 @@ class AllWordsTree(WordlyFinder):
                 self._add_word(word, lang)
 
     def _add_word(self, word: str, lang: Language) -> None:
-        current = getattr(self, f"{lang.value}_root")
+        current = self._get_root_by_lang(lang)
         for idx, letter in enumerate(word):
             if letter not in current.children:
                 current.children[letter] = LetterNode(
