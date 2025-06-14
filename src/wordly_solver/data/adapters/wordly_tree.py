@@ -2,12 +2,13 @@ import random
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Set
 
-from wordly_solver.core.game.adapters.wordly_finder import WordlySearchDTO, WordlyFinder
+from wordly_solver.core.game.contracts.wordly_finder import WordlySearchDTO, WordlyFinder
+from wordly_solver.core.words.constants import Language
 
 
 @dataclass
 class LetterNode:
-    letter_high: int  # letter number in word
+    letter_high: int  # value number in word
     letter: str
     children: Dict[str, "LetterNode"] = field(default_factory=dict)
     parent: Optional["LetterNode"] = None
@@ -26,7 +27,7 @@ class LetterNode:
 
 
 class AllWordsTree(WordlyFinder):
-    # TODO: все еще есть попытки? - вырезать как можно больше букв, которые все еще можно
+    # TODO: поддержка нескольких языков
     def __init__(self, init_words: Set[str]) -> None:
         self.root = LetterNode(
             letter_high=0,
@@ -56,6 +57,7 @@ class AllWordsTree(WordlyFinder):
     def wordly_search(
             self,
             dto: WordlySearchDTO,
+            language: Language,  # TODO impl, tests
             start_node: LetterNode | None = None
     ) -> str | None:
         """DFS"""
@@ -86,7 +88,7 @@ class AllWordsTree(WordlyFinder):
                 return None
 
             reached = self.wordly_search(
-                start_node=start_node.children[letter], dto=dto
+                start_node=start_node.children[letter], dto=dto, language=language
             )
 
             if reached:
@@ -128,7 +130,7 @@ class AllWordsTree(WordlyFinder):
 
             for children in valid_children:
                 if not children.visited:
-                    reached = self.wordly_search(start_node=children, dto=dto)
+                    reached = self.wordly_search(start_node=children, dto=dto, language=language)
 
                     if reached:
                         return reached

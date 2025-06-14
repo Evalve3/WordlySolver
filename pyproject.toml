@@ -12,19 +12,8 @@ authors = [
     { name = "Evalve3", email = "evalve39@gmail.com" },
 ]
 description = "WordlySolver"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 
 dependencies = [
 
-]
-
-[project.optional-dependencies]
-test = [
-    "pytest"
-]
-linter = [
-    "ruff"
-]
-type_checker = [
-    "mypy",
 ]

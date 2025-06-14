@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict, Set
 
+from wordly_solver.core.words.constants import Language
+
 
 @dataclass
 class WordlySearchDTO:
@@ -16,5 +18,5 @@ class WordlySearchDTO:
 
 class WordlyFinder(ABC):
     @abstractmethod
-    def wordly_search(self, dto: WordlySearchDTO) -> str | None:
+    def wordly_search(self, dto: WordlySearchDTO, language: Language) -> str | None:
         pass

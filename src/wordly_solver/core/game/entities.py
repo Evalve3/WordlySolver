@@ -11,8 +11,8 @@ class WordlyLetterState(Enum):
 
 @dataclass
 class WordlyLetter:
-    letter: str
+    value: str
     state: WordlyLetterState
 
 
-WordlyWord = Dict[int, WordlyLetter]  # Index in word: letter
+type WordlyWord = Dict[int, WordlyLetter]  # Index in word: value

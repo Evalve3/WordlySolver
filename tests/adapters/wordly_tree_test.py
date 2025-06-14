@@ -4,8 +4,9 @@ from typing import Set
 
 import pytest
 
-from wordly_solver.core.game.adapters.wordly_finder import WordlySearchDTO
-from src.wordly_solver.data.wordly_tree import AllWordsTree
+from wordly_solver.core.game.contracts.wordly_finder import WordlySearchDTO
+from wordly_solver.data.adapters.wordly_tree import AllWordsTree
+from wordly_solver.core.words.constants import Language
 
 TEST_WORDS = {
     "abaca",
@@ -53,7 +54,7 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
     )
     results = set()
     for _ in range(100):  # Run multiple times to check randomness
-        result = english_word5_tree.wordly_search(dto)
+        result = english_word5_tree.wordly_search(dto, language=Language.ENG)
         if result:
             results.add(result)
     assert len(results) > 1
@@ -98,7 +99,7 @@ def test_wordly_search_one_result(
         dto: WordlySearchDTO, expected: str | None, english_word5_tree: AllWordsTree
 ):
     for _ in range(100):
-        result = english_word5_tree.wordly_search(dto)
+        result = english_word5_tree.wordly_search(dto, language=Language.ENG)
 
         assert result == expected
 
@@ -168,7 +169,7 @@ def test_wordly_search_multiply_results(
 
     actual_get = set()
     for _ in range(len(expected)):
-        result = english_word5_tree.wordly_search(dto)
+        result = english_word5_tree.wordly_search(dto, language=Language.ENG)
         actual_get.add(result)
         assert result in expected
         if result is not None:
