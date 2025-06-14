@@ -4,7 +4,7 @@ from typing import Set
 
 import pytest
 
-from src.wordly_solver.core.wordly_solver import WordlySearchDTO
+from wordly_solver.core.game.adapters.wordly_finder import WordlySearchDTO
 from src.wordly_solver.data.wordly_tree import AllWordsTree
 
 TEST_WORDS = {
@@ -65,7 +65,7 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
         (
                 WordlySearchDTO(
                     exclude_letters={"a", "b", "r", "o", "l", "s"},
-                    positions_letter={3: "t", 5: "d"},
+                    positions_letter={2: "t", 4: "d"},
                     exclude_positions={},
                     max_count={},
                     wordly_len=5,
@@ -75,7 +75,7 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
         (
                 WordlySearchDTO(
                     exclude_letters={"a", "b", "r", "o", "l", "s"},
-                    positions_letter={3: "t", 5: "d"},
+                    positions_letter={2: "t", 4: "d"},
                     exclude_positions={},
                     max_count={"m": 0},
                     wordly_len=5,
@@ -109,9 +109,9 @@ def test_wordly_search_one_result(
         (
                 WordlySearchDTO(
                     exclude_letters=set(),
-                    positions_letter={1: "a"},
+                    positions_letter={0: "a"},
                     exclude_positions={
-                        4: {"e"},
+                        3: {"e"},
                     },
                     max_count={},
                     wordly_len=5,
@@ -121,7 +121,7 @@ def test_wordly_search_one_result(
         (
                 WordlySearchDTO(
                     exclude_letters={"b", "f", "y"},
-                    positions_letter={2: "e"},
+                    positions_letter={1: "e"},
                     exclude_positions={},
                     max_count={},
                     wordly_len=5,
@@ -131,7 +131,7 @@ def test_wordly_search_one_result(
         (
                 WordlySearchDTO(
                     exclude_letters={"a", "s"},
-                    positions_letter={5: "m"},
+                    positions_letter={4: "m"},
                     exclude_positions={},
                     max_count={},
                     wordly_len=5,
@@ -141,7 +141,7 @@ def test_wordly_search_one_result(
         (
                 WordlySearchDTO(
                     exclude_letters=set(),
-                    positions_letter={1: "a"},
+                    positions_letter={0: "a"},
                     exclude_positions={},
                     max_count={"a": 2, "e": 1, "s": 2},
                     wordly_len=5,
@@ -151,8 +151,8 @@ def test_wordly_search_one_result(
         (
                 WordlySearchDTO(
                     exclude_letters={"a"},
-                    positions_letter={1: "b"},
-                    exclude_positions={3: {"s"}},
+                    positions_letter={0: "b"},
+                    exclude_positions={2: {"s"}},
                     max_count={"o": 1},
                     wordly_len=5,
                 ),

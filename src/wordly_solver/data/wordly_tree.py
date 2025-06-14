@@ -2,7 +2,7 @@ import random
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Set
 
-from src.wordly_solver.core.wordly_solver import WordlySearchDTO, WordlySolver
+from wordly_solver.core.game.adapters.wordly_finder import WordlySearchDTO, WordlyFinder
 
 
 @dataclass
@@ -25,7 +25,7 @@ class LetterNode:
         return word[::-1]
 
 
-class AllWordsTree(WordlySolver):
+class AllWordsTree(WordlyFinder):
     # TODO: все еще есть попытки? - вырезать как можно больше букв, которые все еще можно
     def __init__(self, init_words: Set[str]) -> None:
         self.root = LetterNode(
@@ -81,7 +81,7 @@ class AllWordsTree(WordlySolver):
 
         start_node.visited = True
 
-        if letter := dto.positions_letter.get(start_node.letter_high + 1):
+        if letter := dto.positions_letter.get(start_node.letter_high):
             if letter not in start_node.children:
                 return None
 
@@ -98,10 +98,10 @@ class AllWordsTree(WordlySolver):
                 if child.letter not in dto.exclude_letters
             ]
 
-            if dto.exclude_positions.get(start_node.letter_high + 1):
+            if dto.exclude_positions.get(start_node.letter_high):
                 valid_letters = {
                                     c.letter for c in valid_children
-                                } - dto.exclude_positions[start_node.letter_high + 1]
+                                } - dto.exclude_positions[start_node.letter_high]
 
                 valid_children = [
                     child for child in valid_children if child.letter in valid_letters

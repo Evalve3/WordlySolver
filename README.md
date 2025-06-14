@@ -1,1 +1,1 @@
-# WordlySolver
+# WordlyFinder
