@@ -6,7 +6,7 @@ import pytest
 from wordly_solver.core.game.contracts.wordly_finder import WordlySearchDTO, WordlyFinder
 from wordly_solver.core.game.entities import WordlyLetter, WordlyLetterState, WordlyWord
 from wordly_solver.core.game.usecases.exceptions import IncorrectInputError
-from wordly_solver.core.game.usecases.get_next_word import GetSuitableWord, GetSuitableWordDTO
+from wordly_solver.core.game.usecases.get_suitable_word import GetSuitableWord, GetSuitableWordDTO
 from wordly_solver.core.user.contracts.id_provider import IdProvider
 from wordly_solver.core.user.entities import User
 from wordly_solver.core.words.constants import Language
