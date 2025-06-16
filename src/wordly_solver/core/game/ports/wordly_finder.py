@@ -20,3 +20,15 @@ class WordlyFinder(ABC):
     @abstractmethod
     def wordly_search(self, dto: WordlySearchDTO, language: Language) -> str | None:
         pass
+
+    @abstractmethod
+    def get_exclude_word(
+            self,
+            forbidden_letters: set[str],
+            language: Language,
+            wordly_len: int
+    ) -> str | None:
+        """
+            Get a word that excludes as many letters as possible
+        """
+        pass

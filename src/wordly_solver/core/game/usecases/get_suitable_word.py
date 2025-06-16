@@ -2,11 +2,11 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import List, Set, Dict, Tuple
 
-from wordly_solver.core.game.contracts.wordly_finder import WordlyFinder, WordlySearchDTO
+from wordly_solver.core.game.ports.wordly_finder import WordlyFinder, WordlySearchDTO
 from wordly_solver.core.game.entities import WordlyWord, WordlyLetterState
 from wordly_solver.core.game.usecases.exceptions import IncorrectInputError
-from wordly_solver.core.user.contracts.id_provider import IdProvider
-from wordly_solver.core.words.contracts.words_gateway import WordsGateway
+from wordly_solver.core.user.ports.id_provider import IdProvider
+from wordly_solver.core.words.ports.words_gateway import WordsGateway
 
 
 @dataclass
@@ -123,7 +123,7 @@ class GetSuitableWord:
         )
 
     async def execute(self, dto: GetSuitableWordDTO) -> str | None:
-        current_user = await self.id_provider.get_current_user()
+        current_user = self.id_provider.get_current_user()
 
         if len(dto.current_words) == 0:
             return await self.words_gateway.get_first_word(

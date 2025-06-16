@@ -1,10 +1,10 @@
 import copy
 import string
-from typing import Set, Dict
+from typing import Set, Dict, Tuple
 
 import pytest
 
-from wordly_solver.core.game.contracts.wordly_finder import WordlySearchDTO
+from wordly_solver.core.game.ports.wordly_finder import WordlySearchDTO
 from wordly_solver.core.words.constants import Language
 from wordly_solver.data.adapters.wordly_tree import AllWordsTree
 
@@ -41,22 +41,28 @@ TEST_RU_WORDS = {
     "питон"
 }
 
+TEST_RU_WORDS4 = {
+    "пиво",
+    "вода",
+}
 
-def _get_test_tree(test_words: Dict[Language, Set[str]]) -> AllWordsTree:
+
+def _get_test_tree(test_words: Dict[Tuple[Language, int], Set[str]]) -> AllWordsTree:
     return AllWordsTree(test_words)
 
 
 @pytest.fixture(scope="module")
-def english_word5_tree() -> AllWordsTree:
+def word_tree() -> AllWordsTree:
     return _get_test_tree(
         {
-            Language.ENG: TEST_ENG_WORDS,
-            Language.RU: TEST_RU_WORDS
+            (Language.ENG, 5): TEST_ENG_WORDS,
+            (Language.RU, 5): TEST_RU_WORDS,
+            (Language.RU, 4): TEST_RU_WORDS4
         }
     )
 
 
-def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
+def test_wordly_search_randomness(word_tree: AllWordsTree):
     dto = WordlySearchDTO(
         exclude_letters={"a"},
         positions_letter={},
@@ -66,7 +72,7 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
     )
     results = set()
     for _ in range(100):  # Run multiple times to check randomness
-        result = english_word5_tree.wordly_search(dto, language=Language.ENG)
+        result = word_tree.wordly_search(dto, language=Language.ENG)
         if result:
             results.add(result)
     assert len(results) > 1
@@ -141,13 +147,35 @@ def test_wordly_search_randomness(english_word5_tree: AllWordsTree):
                 ),
                 None,
         ),
+        (
+                Language.RU,
+                WordlySearchDTO(
+                    exclude_letters=set(),
+                    positions_letter={0: "п"},
+                    exclude_positions={},
+                    max_count={},
+                    wordly_len=4,
+                ),
+                "пиво",
+        ),
+        (
+                Language.RU,
+                WordlySearchDTO(
+                    exclude_letters=set(),
+                    positions_letter={1: "о"},
+                    exclude_positions={},
+                    max_count={},
+                    wordly_len=4,
+                ),
+                "вода",
+        ),
     ],
 )
 def test_wordly_search_one_result(
-        language: Language, dto: WordlySearchDTO, expected: str | None, english_word5_tree: AllWordsTree
+        language: Language, dto: WordlySearchDTO, expected: str | None, word_tree: AllWordsTree
 ):
     for _ in range(100):
-        result = english_word5_tree.wordly_search(dto, language=language)
+        result = word_tree.wordly_search(dto, language=language)
         assert result == expected
 
 
@@ -234,11 +262,14 @@ def test_wordly_search_one_result(
     ],
 )
 def test_wordly_search_multiply_results(
-        language: Language, dto: WordlySearchDTO, expected: list[str | None], english_word5_tree: AllWordsTree
+        language: Language, dto: WordlySearchDTO, expected: list[str | None], word_tree: AllWordsTree
 ):
     actual_get = set()
-    test_words = copy.deepcopy({Language.ENG: TEST_ENG_WORDS, Language.RU: TEST_RU_WORDS})
-    current_words = test_words[language]
+    test_words = copy.deepcopy({
+        (Language.ENG, 5): TEST_ENG_WORDS,
+        (Language.RU, 5): TEST_RU_WORDS,
+    })
+    current_words = test_words[(language, 5)]
 
     for _ in range(len(expected)):
         tree = _get_test_tree(test_words)
@@ -247,6 +278,6 @@ def test_wordly_search_multiply_results(
         assert result in expected
         if result is not None and result in current_words:
             current_words.remove(result)
-            test_words[language] = current_words
+            test_words[(language, 5)] = current_words
 
     assert actual_get == set(expected)

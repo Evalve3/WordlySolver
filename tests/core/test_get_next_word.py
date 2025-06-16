@@ -3,14 +3,14 @@ from unittest.mock import create_autospec, AsyncMock, Mock
 
 import pytest
 
-from wordly_solver.core.game.contracts.wordly_finder import WordlySearchDTO, WordlyFinder
+from wordly_solver.core.game.ports.wordly_finder import WordlySearchDTO, WordlyFinder
 from wordly_solver.core.game.entities import WordlyLetter, WordlyLetterState, WordlyWord
 from wordly_solver.core.game.usecases.exceptions import IncorrectInputError
 from wordly_solver.core.game.usecases.get_suitable_word import GetSuitableWord, GetSuitableWordDTO
-from wordly_solver.core.user.contracts.id_provider import IdProvider
+from wordly_solver.core.user.ports.id_provider import IdProvider
 from wordly_solver.core.user.entities import User
 from wordly_solver.core.words.constants import Language
-from wordly_solver.core.words.contracts.words_gateway import WordsGateway
+from wordly_solver.core.words.ports.words_gateway import WordsGateway
 
 
 def create_wordly_word(word: str, states: list[WordlyLetterState]) -> WordlyWord:
@@ -316,7 +316,7 @@ TEST_ENG_USER = User(language=Language.ENG)
 async def test_execute_empty_current_words(get_suitable_word, words_gateway, id_provider):
     dto = GetSuitableWordDTO(current_words=[], word_len=3)
 
-    id_provider.get_current_user = AsyncMock(return_value=TEST_ENG_USER)
+    id_provider.get_current_user = Mock(return_value=TEST_ENG_USER)
     words_gateway.get_first_word = AsyncMock(return_value="CAT")
 
     result = await get_suitable_word.execute(dto)
@@ -402,7 +402,7 @@ async def test_execute_incorrect_word_length(get_suitable_word):
 async def test_execute(get_suitable_word, wordly_solver, id_provider, current_words, expected_result,
                        expected_search_dto):
     dto = GetSuitableWordDTO(current_words=current_words, word_len=3)
-    id_provider.get_current_user = AsyncMock(return_value=TEST_ENG_USER)
+    id_provider.get_current_user = Mock(return_value=TEST_ENG_USER)
     wordly_solver.wordly_search = Mock(return_value=expected_result)
 
     result = await get_suitable_word.execute(dto)
