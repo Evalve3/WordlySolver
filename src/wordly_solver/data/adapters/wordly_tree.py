@@ -83,50 +83,6 @@ class AllWordsTree(WordlyFinder):
         forbidden_count = 0
         pass
 
-    #  def find_word_with_min_forbidden(
-    #         self,
-    #         lang: Language,
-    #         word_length: int,
-    #         forbidden_letters: Set[str]
-    #     ) -> Optional[str]:
-    #         """
-    #         Находит слово с минимальным количеством запрещенных букв.
-    #         Использует очередь с приоритетами для обработки веток по возрастанию
-    #         количества запрещенных букв.
-    #         """
-    #         root = self._get_root_by_lang(lang, word_length)
-    #         # Очередь с приоритетами: (кол-во запрещенных букв, текущий узел, список оставшихся детей)
-    #         pq = PriorityQueue()
-    #         pq.put((0, root, list(root.children.keys())))
-    #
-    #         while not pq.empty():
-    #             forbidden_count, current_node, remaining_children = pq.get()
-    #
-    #             # Проверяем оставшихся детей текущего узла
-    #             for child_letter in remaining_children[:]:
-    #                 remaining_children.remove(child_letter)
-    #                 child_node = current_node.children[child_letter]
-    #
-    #                 # Обновляем счетчик запрещенных букв
-    #                 new_forbidden_count = forbidden_count + (1 if child_letter in forbidden_letters else 0)
-    #
-    #                 # Если это конец слова и допустимое количество запрещенных букв
-    #                 if child_node.is_end:
-    #                     return child_node.get_full_word()
-    #
-    #                 # Если есть дети, добавляем их в очередь
-    #                 if child_node.children:
-    #                     # Создаем новую очередь с оставшимися детьми
-    #                     # (копируем, чтобы не модифицировать оригинал)
-    #                     new_remaining = list(child_node.children.keys())
-    #                     pq.put((new_forbidden_count, child_node, new_remaining))
-    #
-    #             # Если остались необработанные дети, возвращаем узел в очередь
-    #             if remaining_children:
-    #                 pq.put((forbidden_count, current_node, remaining_children))
-    #
-    #         return None  # Если не найдено подходящее слово
-
     def wordly_search(
             self,
             dto: WordlySearchDTO,
